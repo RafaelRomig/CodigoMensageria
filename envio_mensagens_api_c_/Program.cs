@@ -1,4 +1,3 @@
-
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -16,6 +15,9 @@ namespace envio_mensagens_api_c_
             {
                 var services = scope.ServiceProvider;
                 var context = services.GetRequiredService<BancoMensagem>();
+
+                // Aqui você pode realizar qualquer inicialização ou operação com o banco de dados, se necessário
+                // Exemplo: context.Database.Migrate();
             }
 
             host.Run();
