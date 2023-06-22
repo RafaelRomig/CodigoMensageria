@@ -1,12 +1,10 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using envio_mensagens_api_c_.Data;
 using envio_mensagem_c_;
-
 namespace envio_mensagens_api_c_
 {
     public class Startup

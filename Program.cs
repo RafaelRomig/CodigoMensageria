@@ -31,7 +31,7 @@ namespace envio_mensagem_c_
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddDbContext<BancoMensagem>(options =>
-                        options.UseSqlite("Data Source=your-database.db"));
+                        options.UseSqlite("BancoMensagem.db"));
 
                     services.AddHostedService<RabbitMQService>();
                 });
@@ -91,6 +91,22 @@ namespace envio_mensagem_c_
         public BancoMensagem(DbContextOptions<BancoMensagem> options)
             : base(options)
         {
+        }
+
+        public void SeedData()
+        {
+            if (!Messages.Any())
+            {
+                var messages = new List<Message>
+                {
+                    new Message { Text = "Exemplo de mensagem 1" },
+                    new Message { Text = "Exemplo de mensagem 2" },
+                    new Message { Text = "Exemplo de mensagem 3" }
+                };
+
+                Messages.AddRange(messages);
+                SaveChanges();
+            }
         }
     }
 }

@@ -1,0 +1,7 @@
+C:\Users\Windows\Documents\GitHub\CodigoMensageria\envio_mensagens_api_c_\obj\Debug\net6.0\envio_mensagens_api_c#.csproj.AssemblyReference.cache
+C:\Users\Windows\Documents\GitHub\CodigoMensageria\envio_mensagens_api_c_\obj\Debug\net6.0\envio_mensagens_api_c#.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Windows\Documents\GitHub\CodigoMensageria\envio_mensagens_api_c_\obj\Debug\net6.0\envio_mensagens_api_c#.AssemblyInfoInputs.cache
+C:\Users\Windows\Documents\GitHub\CodigoMensageria\envio_mensagens_api_c_\obj\Debug\net6.0\envio_mensagens_api_c#.AssemblyInfo.cs
+C:\Users\Windows\Documents\GitHub\CodigoMensageria\envio_mensagens_api_c_\obj\Debug\net6.0\envio_mensagens_api_c#.csproj.CoreCompileInputs.cache
+C:\Users\Windows\Documents\GitHub\CodigoMensageria\envio_mensagens_api_c_\obj\Debug\net6.0\envio_mensagens_api_c#.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Windows\Documents\GitHub\CodigoMensageria\envio_mensagens_api_c_\obj\Debug\net6.0\envio_mensagens_api_c#.MvcApplicationPartsAssemblyInfo.cache
