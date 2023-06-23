@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
+using System.Text;
 using envio_mensagens_api_c_.Repositories;
+using RabbitMQ.Client;
 
 namespace envio_mensagens_api_c_.Controllers
 {
@@ -10,26 +11,16 @@ namespace envio_mensagens_api_c_.Controllers
     public class MessagesController : ControllerBase
     {
         private readonly IMessageRepository _messageRepository;
+        private readonly ConnectionFactory _connectionFactory;
 
         public MessagesController(IMessageRepository messageRepository)
         {
             _messageRepository = messageRepository;
-        }
 
-        [HttpGet]
-        public IEnumerable<Mensagem> Get()
-        {
-            return _messageRepository.GetMessages();
-        }
-
-        [HttpGet("{id}")]
-        public IActionResult Get(int id)
-        {
-            var message = _messageRepository.GetMessageById(id);
-            if (message == null)
-                return NotFound();
-
-            return Ok(message);
+            _connectionFactory = new ConnectionFactory
+            {
+                HostName = "localhost"
+            };
         }
 
         [HttpPost]
@@ -41,23 +32,32 @@ namespace envio_mensagens_api_c_.Controllers
                 return BadRequest("O campo Text não pode estar vazio.");
             }
 
-            // Gera um ID exclusivo para a mensagem
-            int id = GerarIdUnico();
+            try
+            {
+                using (var connection = _connectionFactory.CreateConnection())
+                using (var channel = connection.CreateModel())
+                {
+                    channel.QueueDeclare(queue: "FILA",
+                                         durable: false,
+                                         exclusive: false,
+                                         autoDelete: false,
+                                         arguments: null);
 
-            // Cria uma nova instância de Mensagem com o ID e o texto fornecido
-            var novaMensagem = new Mensagem { Id = id, Text = mensagem.Text };
+                    var body = Encoding.UTF8.GetBytes(mensagem.Text);
 
-            // Envia a mensagem para o repositório ou faz o processamento necessário
-            _messageRepository.AddMessageAsync(novaMensagem);
+                    channel.BasicPublish(exchange: "",
+                                         routingKey: "FILA",
+                                         basicProperties: null,
+                                         body: body);
+                }
 
-            return Ok($"Mensagem enviada: {novaMensagem.Text}");
-        }
-
-        private int GerarIdUnico()
-        {
-            // Aqui você pode implementar sua lógica para gerar um ID único,
-            // como usar um contador, gerar um GUID, etc.
-            return new Random().Next(1, 1000);
+                return Ok($"Mensagem enviada: {mensagem.Text}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Erro ao conectar ao RabbitMQ: " + ex.ToString());
+                return StatusCode(500, "Erro ao enviar a mensagem.");
+            }
         }
     }
 }
