@@ -8,7 +8,6 @@ using MySql.Data.MySqlClient;
 namespace envio_mensagens_api_c_.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
     public class MessagesController : ControllerBase
     {
         private readonly IMessageRepository _messageRepository;
@@ -28,6 +27,7 @@ namespace envio_mensagens_api_c_.Controllers
         }
 
         [HttpPost]
+        [Route("api/[controller]")]
         public IActionResult Post([FromBody] Mensagem mensagem)
         {
             // Verifica se o campo Text não está vazio ou nulo
