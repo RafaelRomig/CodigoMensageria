@@ -1,13 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
+using RabbitMQ.Client;
 using System;
 using System.Text;
 using envio_mensagens_api_c_.Repositories;
-using RabbitMQ.Client;
 using MySql.Data.MySqlClient;
 
 namespace envio_mensagens_api_c_.Controllers
 {
     [ApiController]
+    [Route("api/[controller]")]
     public class MessagesController : ControllerBase
     {
         private readonly IMessageRepository _messageRepository;
@@ -27,7 +28,6 @@ namespace envio_mensagens_api_c_.Controllers
         }
 
         [HttpPost]
-        [Route("api/[controller]")]
         public IActionResult Post([FromBody] Mensagem mensagem)
         {
             // Verifica se o campo Text não está vazio ou nulo
@@ -38,19 +38,18 @@ namespace envio_mensagens_api_c_.Controllers
 
             try
             {
-                using (var connection = _connectionFactory.CreateConnection())
+                string exchangeName = "amq.default";
+                string routingKey = "minha.routing.key";
+
+                var factory = new ConnectionFactory() { HostName = "localhost" };
+
+                using (var connection = factory.CreateConnection())
                 using (var channel = connection.CreateModel())
                 {
-                    channel.QueueDeclare(queue: "FILA",
-                                         durable: false,
-                                         exclusive: false,
-                                         autoDelete: false,
-                                         arguments: null);
-
                     var body = Encoding.UTF8.GetBytes(mensagem.Text);
 
-                    channel.BasicPublish(exchange: "",
-                                         routingKey: "FILA",
+                    channel.BasicPublish(exchange: exchangeName,
+                                         routingKey: routingKey,
                                          basicProperties: null,
                                          body: body);
                 }
