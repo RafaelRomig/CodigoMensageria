@@ -34,9 +34,6 @@ namespace envio_mensagens_api_c_.Repositories
             return _messages.ToList();
         }
 
-        public Mensagem? GetMessageById(int id)
-        {
-            return _messages.FirstOrDefault(m => m.Id == id);
-        }
+        public Mensagem? GetMessageById(int id) => _messages.FirstOrDefault(m => m.Id == id);
     }
 }

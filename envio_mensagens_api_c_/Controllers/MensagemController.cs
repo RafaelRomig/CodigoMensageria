@@ -3,6 +3,7 @@ using System;
 using System.Text;
 using envio_mensagens_api_c_.Repositories;
 using RabbitMQ.Client;
+using MySql.Data.MySqlClient;
 
 namespace envio_mensagens_api_c_.Controllers
 {
@@ -11,7 +12,8 @@ namespace envio_mensagens_api_c_.Controllers
     public class MessagesController : ControllerBase
     {
         private readonly IMessageRepository _messageRepository;
-        private readonly ConnectionFactory _connectionFactory;
+        private readonly RabbitMQ.Client.ConnectionFactory _connectionFactory;
+        private readonly string _connectionString;
 
         public MessagesController(IMessageRepository messageRepository)
         {
@@ -21,6 +23,8 @@ namespace envio_mensagens_api_c_.Controllers
             {
                 HostName = "localhost"
             };
+
+            _connectionString = "Server=localhost;Port=3306;User ID=root;Password=Elisangela1;Database=chamadodb";
         }
 
         [HttpPost]
@@ -51,7 +55,21 @@ namespace envio_mensagens_api_c_.Controllers
                                          body: body);
                 }
 
-                return Ok($"Mensagem enviada: {mensagem.Text}");
+                // Grava a mensagem no banco de dados MySQL
+                using (var conn = new MySqlConnection(_connectionString))
+                {
+                    conn.Open();
+                    using (var comm = new MySqlCommand())
+                    {
+                        comm.Connection = conn;
+                        comm.CommandType = System.Data.CommandType.Text;
+                        comm.CommandText = "INSERT INTO mensagem VALUES (0, @mensagem)";
+                        comm.Parameters.AddWithValue("@mensagem", mensagem.Text);
+                        comm.ExecuteNonQuery();
+                    }
+                }
+
+                return Ok($"Mensagem enviada e gravada no banco de dados: {mensagem.Text}");
             }
             catch (Exception ex)
             {

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using envio_mensagens_api_c_.Services;
 using envio_mensagens_api_c_.Repositories;
 
 namespace envio_mensagem_c_
@@ -16,7 +15,6 @@ namespace envio_mensagem_c_
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddHostedService<RabbitMQService>();
                     services.AddSingleton<IMessageRepository, MessageRepository>();
                 });
     }
